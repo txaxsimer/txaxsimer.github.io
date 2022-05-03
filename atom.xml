@@ -6,7 +6,7 @@
   <link href="https://txaxsimer.github.io/atom.xml" rel="self"/>
   
   <link href="https://txaxsimer.github.io/"/>
-  <updated>2022-05-02T10:19:41.640Z</updated>
+  <updated>2022-05-03T15:45:50.636Z</updated>
   <id>https://txaxsimer.github.io/</id>
   
   <author>
@@ -15,6 +15,63 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>新分支的测试</title>
+    <link href="https://txaxsimer.github.io/2022/05/03/%E6%96%B0%E5%88%86%E6%94%AF%E7%9A%84%E6%B5%8B%E8%AF%95/"/>
+    <id>https://txaxsimer.github.io/2022/05/03/%E6%96%B0%E5%88%86%E6%94%AF%E7%9A%84%E6%B5%8B%E8%AF%95/</id>
+    <published>2022-05-03T15:45:50.000Z</published>
+    <updated>2022-05-03T15:45:50.636Z</updated>
+    
+    <content type="html"><![CDATA[<p>既然都测试用了，下次更新博客就用这个吧。</p><p>test</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;I hate it.&quot;)</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;既然都测试用了，下次更新博客就用这个吧。&lt;/p&gt;
+&lt;p&gt;test&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;b</summary>
+      
+    
+    
+    
+    <category term="摸鱼·生活" scheme="https://txaxsimer.github.io/categories/%E6%91%B8%E9%B1%BC%C2%B7%E7%94%9F%E6%B4%BB/"/>
+    
+    
+    <category term="摸鱼" scheme="https://txaxsimer.github.io/tags/%E6%91%B8%E9%B1%BC/"/>
+    
+    <category term="随笔" scheme="https://txaxsimer.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>5月2日一天的总结</title>
+    <link href="https://txaxsimer.github.io/2022/05/03/5%E6%9C%882%E6%97%A5%E4%B8%80%E5%A4%A9%E7%9A%84%E6%80%BB%E7%BB%93/"/>
+    <id>https://txaxsimer.github.io/2022/05/03/5%E6%9C%882%E6%97%A5%E4%B8%80%E5%A4%A9%E7%9A%84%E6%80%BB%E7%BB%93/</id>
+    <published>2022-05-03T03:39:22.000Z</published>
+    <updated>2022-05-03T15:46:30.575Z</updated>
+    
+    <content type="html"><![CDATA[<p>05-02凌晨，改完了无数报错之后，这个网站终于建成了</p><p>但是随之又迎来各种问题。</p><p>想要实现自动部署，结果npm install步骤一直在报错，无论怎么改，那个明晃晃的红叉和一行一行的npm ERR！都始终不变。</p><p>最后还是放弃了，虽然会麻烦一点，但是无论如何也不想再折腾了。</p><p>也有人说和win10系统有关，用mac就可以，就当是这样吧，反正我没有mac。</p><p>直到晚上看到了Netlify，我把源码库扔到那里就可以生成网页。</p><p>听起来是很方便，但是github.io的这个网站又连不上了。</p><p>今天打算把源码也移动到io库试一试，说实话昨天折腾得实在是筋疲力尽了。</p><p>这两天还有结课报告一笔没动。</p><p>慢慢来吧。</p><p>本来一开始想着这么多报错，做一个汇总的。</p><p>但是已经忘记具体用哪个方法解决了。</p><hr><p>疫情真的会改变很多人的命运。</p><p>你永远不知道今天还低风险的一个市明天会突然变成什么样子。</p><p>这次的爱丁堡魔幻现实，也确实说明了日常资源储备的重要性。</p><p>刚刚得知必修课又转到下学习考了。</p><p>百味杂陈。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;05-02凌晨，改完了无数报错之后，这个网站终于建成了&lt;/p&gt;
+&lt;p&gt;但是随之又迎来各种问题。&lt;/p&gt;
+&lt;p&gt;想要实现自动部署，结果npm install步骤一直在报错，无论怎么改，那个明晃晃的红叉和一行一行的npm ERR！都始终不变。&lt;/p&gt;
+&lt;p&gt;最后还是放弃了，虽然</summary>
+      
+    
+    
+    
+    <category term="摸鱼·生活" scheme="https://txaxsimer.github.io/categories/%E6%91%B8%E9%B1%BC%C2%B7%E7%94%9F%E6%B4%BB/"/>
+    
+    
+    <category term="摸鱼" scheme="https://txaxsimer.github.io/tags/%E6%91%B8%E9%B1%BC/"/>
+    
+    <category term="随笔" scheme="https://txaxsimer.github.io/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
   
   <entry>
     <title>my-first-blog</title>
