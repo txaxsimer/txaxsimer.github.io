@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="顾西暮">
+    
+    <title>
+        
+            操作系统上机实验（三）存储管理——动态不等长存储资源分配算法 |
+        
+        Simer&#39;s Blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="/images/logo.ico">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/css/font-awesome.min.css">
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {};
+    KEEP.hexo_config = {"hostname":"txaxsimer.github.io","root":"/","language":"en","path":"search.json"};
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066CC","avatar":"/images/a2.jpg","favicon":"/images/logo.ico","article_img_align":"left","left_side_width":"260px","content_max_width":"920px","hover":{"shadow":true,"scale":true},"first_screen":{"enable":true,"background_img":"/images/wp3.jpg","description":"世人唯有自我救赎，绝不可尝试依赖他人。"},"scroll":{"progress_bar":{"enable":true},"percent":{"enable":true}}},"local_search":{"enable":true,"preload":true},"code_copy":{"enable":true,"style":"mac"},"pjax":{"enable":false},"lazyload":{"enable":false},"version":"3.4.5"};
+    KEEP.language_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+  </script>
+<meta name="generator" content="Hexo 5.4.2"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            <header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                Simer&#39;s Blog
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                主页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                文章
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/categories"
+                            >
+                                分类
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                标签
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">主页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">文章</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/categories">分类</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags">标签</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about">关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            <span class="title-hover-animation">操作系统上机实验（三）存储管理——动态不等长存储资源分配算法</span>
+        </div>
+
+        
+            <div class="article-header">
+                <div class="avatar">
+                    <img src="/images/a2.jpg">
+                </div>
+                <div class="info">
+                    <div class="author">
+                        <span class="name">顾西暮</span>
+                        
+                            <span class="author-label">咸鱼</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fas fa-edit"></i>&nbsp;
+        <span class="pc">2022-06-16 15:53:02</span>
+        <span class="mobile">2022-06-16 15:53</span>
+    </span>
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/%E8%8F%9C%E9%B8%9F%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">菜鸟学习笔记</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>1.2k Words</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>5 Mins</span>
+        </span>
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        <div class="article-content markdown-body">
+            <blockquote>
+<p>前言：<br>笔者水平有限，有错误之处欢迎指出。<br>思考题没有答案，因为笔者自己的思考题也随便乱写乱copy，就不放出来祸害别人了</p>
+</blockquote>
+<h4 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h4><p>理解动态异长存储分区资源管理，掌握所需数据结构和管理程序，了解各种存储分配算法的优点和缺点。</p>
+<h4 id="实验内容"><a href="#实验内容" class="headerlink" title="实验内容"></a>实验内容</h4><p>分析UNIX最先适应(FF)存储分配算法，即map数据结构、存储分配函数malloc()和存储释放函数mfree()，找出与算法有关的成分。<br>修改上述与算法有关的成分，使其分别体现BF分配原则和WF分配原则。</p>
+<h4 id="实验设计"><a href="#实验设计" class="headerlink" title="实验设计"></a>实验设计</h4><p>按内容要求编写最佳适应和最坏适应存储分配算法。<br>编写测试程序，对存储分配表进行初始化。然后对用户输入的请求和释放，按算法动态更新存储分配表，并将每次更新之后的存储分配表在屏幕上显示出来。</p>
+<h4 id="参考代码"><a href="#参考代码" class="headerlink" title="参考代码"></a>参考代码</h4><blockquote>
+<p>跑不起来所以简单改了一些地方</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span>  HAVE_CONFIG_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span>  <span class="string">&lt;config.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAPSIZE 100</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">map</span>  //存储资源表结构</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> m_addr;</span><br><span class="line">    <span class="type">int</span> m_size;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">map</span> <span class="title">map</span>[<span class="title">MAPSIZE</span>];</span>  <span class="comment">//存储资源表</span></span><br><span class="line"><span class="comment">//BF存储分配函数</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">BF_malloc</span><span class="params">(<span class="keyword">struct</span> <span class="built_in">map</span> *mp,<span class="type">int</span> size)</span>  </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">register</span> <span class="type">int</span> a,s;</span><br><span class="line">    <span class="keyword">register</span> <span class="class"><span class="keyword">struct</span> <span class="title">map</span> *<span class="title">bp</span>,*<span class="title">bpp</span>;</span></span><br><span class="line">    <span class="keyword">for</span>(bp = mp; bp-&gt;m_size; bp++)</span><br><span class="line">    &#123;</span><br><span class="line">       <span class="keyword">if</span> (bp-&gt;m_size &gt;= size)</span><br><span class="line">        &#123;</span><br><span class="line">            a = bp-&gt;m_addr;</span><br><span class="line">            s = bp-&gt;m_size;</span><br><span class="line">            <span class="keyword">for</span>(bpp = bp; bpp-&gt;m_size; bpp++)</span><br><span class="line">            &#123;   <span class="comment">//最佳适应</span></span><br><span class="line">                <span class="keyword">if</span>(bpp-&gt;m_size &gt;= size &amp;&amp; bpp-&gt;m_size &lt; s)</span><br><span class="line">                &#123;</span><br><span class="line">                    a = bpp-&gt;m_addr;</span><br><span class="line">                    s = bpp-&gt;m_size;</span><br><span class="line">                    bp = bpp;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            bp-&gt;m_addr += size;</span><br><span class="line">            <span class="keyword">if</span> ((bp-&gt;m_size -= size) == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">do</span></span><br><span class="line">                &#123;</span><br><span class="line">                    bp++;</span><br><span class="line">                    (bp<span class="number">-1</span>)-&gt;m_addr = bp-&gt;m_addr;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">while</span>((bp<span class="number">-1</span>)-&gt;m_size = bp-&gt;m_size);</span><br><span class="line">            <span class="keyword">return</span>(a);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//WF存储分配函数</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">WF_malloc</span><span class="params">(<span class="keyword">struct</span> <span class="built_in">map</span> *mp,<span class="type">int</span> size)</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">register</span> <span class="type">int</span> a,s;</span><br><span class="line">    <span class="keyword">register</span> <span class="class"><span class="keyword">struct</span> <span class="title">map</span> *<span class="title">bp</span>,*<span class="title">bpp</span>;</span></span><br><span class="line">    <span class="keyword">for</span>(bp = mp; bp-&gt;m_size; bp++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (bp-&gt;m_size &gt;= size)</span><br><span class="line">        &#123;</span><br><span class="line">            a = bp-&gt;m_addr;</span><br><span class="line">            s = bp-&gt;m_size;</span><br><span class="line">            <span class="keyword">for</span>(bpp = bp; bpp-&gt;m_size; bpp++) </span><br><span class="line">            &#123;   <span class="comment">//最坏适应</span></span><br><span class="line">                <span class="keyword">if</span>(bpp-&gt;m_size &gt; s) </span><br><span class="line">                &#123;</span><br><span class="line">                    a = bpp-&gt;m_addr;</span><br><span class="line">                    s = bpp-&gt;m_size;</span><br><span class="line">                    bp = bpp;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">bp-&gt;m_addr += size;</span><br><span class="line">            <span class="keyword">if</span> ((bp-&gt;m_size -=size) == <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">do</span></span><br><span class="line">                &#123;</span><br><span class="line">                    bp++;</span><br><span class="line">                    (bp<span class="number">-1</span>)-&gt;m_addr = bp-&gt;m_addr;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">while</span>((bp<span class="number">-1</span>)-&gt;m_size = bp-&gt;m_size);</span><br><span class="line">            <span class="keyword">return</span>(a);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//存储释放函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">mfree</span><span class="params">(<span class="keyword">struct</span> <span class="built_in">map</span> *mp,<span class="type">int</span> aa,<span class="type">int</span> size)</span> </span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">register</span> <span class="class"><span class="keyword">struct</span> <span class="title">map</span> *<span class="title">bp</span>;</span></span><br><span class="line">    <span class="keyword">register</span> <span class="type">int</span> t;</span><br><span class="line">    <span class="keyword">register</span> <span class="type">int</span> a;</span><br><span class="line">    a = aa;</span><br><span class="line">    <span class="keyword">for</span>(bp = mp; bp-&gt;m_addr&lt;=a &amp;&amp; bp-&gt;m_size != <span class="number">0</span>; bp++)</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">if</span>(bp&gt;mp &amp;&amp; (bp<span class="number">-1</span>)-&gt;m_addr+(bp<span class="number">-1</span>)-&gt;m_size==a)</span><br><span class="line">    &#123;  <span class="comment">//与前合并</span></span><br><span class="line">         (bp<span class="number">-1</span>)-&gt;m_size += size;</span><br><span class="line">         <span class="keyword">if</span> (a+size == bp-&gt;m_addr)</span><br><span class="line">         &#123;   <span class="comment">//前后合并</span></span><br><span class="line">              (bp<span class="number">-1</span>)-&gt;m_size += bp-&gt;m_size;</span><br><span class="line">              <span class="keyword">while</span> (bp-&gt;m_size)</span><br><span class="line">              &#123;</span><br><span class="line">                  bp++;</span><br><span class="line">                  (bp<span class="number">-1</span>)-&gt;m_addr = bp-&gt;m_addr;</span><br><span class="line">                  (bp<span class="number">-1</span>)-&gt;m_size = bp-&gt;m_size;</span><br><span class="line">              &#125;</span><br><span class="line">         &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">         <span class="keyword">if</span> (a+size == bp-&gt;m_addr &amp;&amp; bp-&gt;m_size)</span><br><span class="line">         &#123;   <span class="comment">//与后合并</span></span><br><span class="line">              bp-&gt;m_addr -= size;</span><br><span class="line">              bp-&gt;m_size += size;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">else</span> <span class="keyword">if</span> (size)</span><br><span class="line">              <span class="keyword">do</span></span><br><span class="line">              &#123;   <span class="comment">//无合并</span></span><br><span class="line">                   t = bp-&gt;m_addr;</span><br><span class="line">                   bp-&gt;m_addr = a;</span><br><span class="line">                   a = t;</span><br><span class="line">                   t = bp-&gt;m_size;</span><br><span class="line">                   bp-&gt;m_size = size;</span><br><span class="line">                   bp++;</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">while</span> (size = t);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">init</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">map</span> *<span class="title">bp</span>;</span></span><br><span class="line">    <span class="type">int</span> addr,size;</span><br><span class="line">    <span class="type">int</span> i=<span class="number">0</span>;</span><br><span class="line">    bp=<span class="built_in">map</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Please input starting addr and total size:&quot;</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d,%d&quot;</span>,&amp;addr,&amp;size);</span><br><span class="line">    bp-&gt;m_addr=addr;</span><br><span class="line">    bp-&gt;m_size=size;</span><br><span class="line">    (++bp)-&gt;m_size=<span class="number">0</span>;  <span class="comment">//表尾</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">show_map</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">     <span class="type">int</span> i=<span class="number">0</span>;</span><br><span class="line">     <span class="comment">//system(&quot;clear&quot;);  //清屏</span></span><br><span class="line">     <span class="class"><span class="keyword">struct</span> <span class="title">map</span> *<span class="title">bp</span>;</span></span><br><span class="line">     bp=<span class="built_in">map</span>;</span><br><span class="line">     <span class="built_in">printf</span>(<span class="string">&quot;\nCurrent memory map...\n&quot;</span>);</span><br><span class="line">     <span class="built_in">printf</span>(<span class="string">&quot;Address\t\tSize\n&quot;</span>);</span><br><span class="line">     <span class="keyword">while</span>(bp-&gt;m_size!=<span class="number">0</span>)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="built_in">printf</span>(<span class="string">&quot;&lt;%d\t\t%d&gt;\n&quot;</span>,bp-&gt;m_addr,bp-&gt;m_size);</span><br><span class="line">        bp++;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> a,s;</span><br><span class="line">    <span class="type">char</span> c;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    init();</span><br><span class="line">    getchar();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;please input, b for BF, w for WF:&quot;</span>);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%c&quot;</span>,&amp;c);</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;</span><br><span class="line">        show_map(); <span class="comment">//显示存储资源表</span></span><br><span class="line">        <span class="comment">//printf(&quot;please input, b for BF, w for WF, e for exit\n&quot;);</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;Please input,1 for request,2 for release,0 for exit:&quot;</span>);</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>,&amp;i);</span><br><span class="line">        <span class="keyword">switch</span>(i)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Please input size:&quot;</span>);</span><br><span class="line">                <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;s);</span><br><span class="line">                <span class="keyword">if</span>(c==<span class="string">&#x27;b&#x27;</span>) <span class="comment">//BF</span></span><br><span class="line">                    a=BF_malloc(<span class="built_in">map</span>,s);</span><br><span class="line">                <span class="keyword">else</span>  <span class="comment">//WF</span></span><br><span class="line">                    a=WF_malloc(<span class="built_in">map</span>,s);</span><br><span class="line">                <span class="keyword">if</span>(a==<span class="number">-1</span>)</span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;request can&#x27;t be satisfied\n&quot;</span>);</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    <span class="built_in">printf</span>(<span class="string">&quot;alloc memory at address:%d,size:%d\n&quot;</span>,a,s);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Please input addr and size:&quot;</span>);</span><br><span class="line">                <span class="built_in">scanf</span>(<span class="string">&quot;%d,%d&quot;</span>,&amp;a,&amp;s);</span><br><span class="line">                mfree(<span class="built_in">map</span>,a,s);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h4><img src="https://raw.githubusercontent.com/txaxsimer/picgo-repo/main/img/123.png" title="" alt="" data-align="center">
+
+<img src="https://raw.githubusercontent.com/txaxsimer/picgo-repo/main/img/456.png" title="" alt="" data-align="center">
+
+<h4 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h4><ul>
+<li>上述算法沿用了UNIX系统所采用的数据结构，存储分配表中空闲区按m_addr递增排列，对于任意请求，需要由表头查到表尾才能确定最佳（最坏）分配区域。为提高存储分配时的查找速度，有人将表中空闲区按m_size递增（递减）排列，这样分配时取第一个长度能满足的表项即可。采用这种组织方式，不仅分配后剩余部分在表中的位置可能发生变化，而且需对释放函数进行较大的修改，试给出对应的算法</li>
+<li>对于Linux系统采用的伙伴堆（buddy heap）内存资源管理，设计相应的数据结构和算法。</li>
+</ul>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li>Post title：操作系统上机实验（三）存储管理——动态不等长存储资源分配算法</li>
+        <li>Post author：顾西暮</li>
+        <li>Create time：2022-06-16 15:53:02</li>
+        <li>
+            Post link：https://txaxsimer.github.io/2022/06/16/操作系统上机实验（三）存储管理——动态不等长存储资源分配算法/
+        </li>
+        <li>
+            Copyright Notice：All articles in this blog are licensed under <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> unless stating additionally.
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">#操作系统</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+            <div class="article-nav">
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                           rel="next"
+                           href="/2022/05/15/%E3%80%90%E6%B8%B8%E6%88%8F%E9%9A%8F%E6%83%B3%E5%BD%95%E3%80%91%E3%80%8A%E9%A3%8E%E8%B5%B7%E9%95%BF%E5%AE%89%EF%BC%9A%E9%A9%AD%E9%AA%A8%E4%BA%BA%E3%80%8B/"
+                        >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">【游戏随想录】《风起长安：驭骨人》</span>
+                                <span class="post-nav-item">Next posts</span>
+                            </span>
+                            <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+        
+            <div class="comment-container">
+                <div class="comments-container">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fas fa-comments">&nbsp;Comments</i>
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script 
+            src="//cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js"></script>
+    <script >
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: 'd3e81924a6ae472603c6',
+                    clientSecret: '50539446f46b53ff11989d12a1a6777fb74c2821',
+                    repo: 'hexo-site-comments',
+                    owner: 'txaxsimer',
+                    admin: ['txaxsimer'],
+                    id: __gitalk__pathname,
+                    language: 'en'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('false') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            <footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2022&nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;<a href="/">顾西暮</a>
+        </div>
+        
+            <script async  src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="website-count info-item">
+                
+                
+                    <span id="busuanzi_container_site_pv">
+                        Totalview&nbsp;<span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="theme-info info-item">
+            Powered by <a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;|&nbsp;Theme&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.4.5</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item page-aside-toggle">
+                <i class="fas fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-expand-width flex-center">
+            <i class="fas fa-arrows-alt-h"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+            <li class="tools-item rss flex-center">
+                <a class="flex-center"
+                   href="/atom.xml"
+                   target="_blank"
+                >
+                    <i class="fas fa-rss"></i>
+                </a>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    
+        <aside class="page-aside">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%9B%AE%E7%9A%84"><span class="nav-number">1.</span> <span class="nav-text">实验目的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E5%86%85%E5%AE%B9"><span class="nav-number">2.</span> <span class="nav-text">实验内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">实验设计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">参考代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="nav-number">5.</span> <span class="nav-text">实验结果</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%9D%E8%80%83%E9%A2%98"><span class="nav-number">6.</span> <span class="nav-text">思考题</span></a></li></ol>
+    </div>
+</div>
+        </aside>
+    
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="Search..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/utils.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/main.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/header-shrink.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/back2top.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/dark-light-toggle.js"></script>
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/local-search.js"></script>
+
+
+
+    <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/code-copy.js"></script>
+
+
+
+
+<div class="post-scripts">
+    
+        <script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/left-side-toggle.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/libs/anime.min.js"></script><script src="//cdn.jsdelivr.net/npm/hexo-theme-keep@3.4.5/source/js/toc.js"></script>
+    
+</div>
+
+
+
+</body>
+</html>
